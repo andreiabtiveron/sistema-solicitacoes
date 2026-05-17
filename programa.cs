@@ -5,7 +5,7 @@ using Microsoft.Extensions.Hosting;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddSingleton<SolicitacaoRepository>(); // uma instancia só
+builder.Services.AddSingleton<SolicitacaoRepositorio>(); // uma instancia só
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
