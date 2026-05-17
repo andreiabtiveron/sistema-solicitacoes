@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Controle de Solicitações</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous"/>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Open Sans', sans-serif;
+      background: #f5f5f5;
+      color: #000;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    /* header */
+    header {
+      background: #fff;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #ddd;
+    }
+    header h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 18px;
+      color: #000;
+    }
+
+    /* main */
+    main {
+      flex: 1;
+      padding: 15px;
+      max-width: 900px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* resumo */
+    .resumo {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .card-resumo {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 15px;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .card-resumo:hover { transform: translateY(-5px); }
+    .card-resumo .label {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 4px;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .card-resumo .numero {
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: 'Montserrat', sans-serif;
+      color: #fbba00;
+    }
+
+    /* cards */
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      padding: 15px;
+      margin-bottom: 15px;
+      transition: transform 0.3s ease;
+    }
+    .card:hover { transform: translateY(-5px); }
+    .card h2 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: #000;
+    }
+
+    /* formulário */
+    .campos {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: 'Open Sans', sans-serif;
+      color: #000;
+    }
+    input:focus, select:focus {
+      outline: none;
+      border-color: #fbba00;
+    }
+    .erro {
+      font-size: 12px;
+      color: red;
+      min-height: 18px;
+      margin-bottom: 8px;
+    }
+
+    /* botão */
+    .btn {
+      background: #fbba00;
+      color: #000;
+      border: none;
+      border-radius: 20px;
+      padding: 12px 24px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: 'Open Sans', sans-serif;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .btn:hover { background: #e6a800; }
+
+    /* filtro */
+    .filtro-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .filtro-row select { max-width: 180px; }
+
+    /* tabela */
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th {
+      text-align: left;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: #888;
+      border-bottom: 1px solid #eee;
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+    td { padding: 10px; border-bottom: 1px solid #f0f0f0; }
+    tr:last-child td { border-bottom: none; }
+
+    /* badges */
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .badge-pendente { background: #fef3c7; color: #92400e; }
+    .badge-concluida { background: #dcfce7; color: #166534; }
+    .badge-andamento { background: #dbeafe; color: #1e40af; }
+    .badge-cancelada { background: #fee2e2; color: #991b1b; }
+
+    /* botão de status */
+    .btn-status {
+      font-size: 12px;
+      border: 1px solid #ddd;
+      background: #f9f9f9;
+      border-radius: 20px;
+      padding: 4px 12px;
+      cursor: pointer;
+      font-family: 'Open Sans', sans-serif;
+      transition: background 0.3s ease;
+    }
+    .btn-status:hover { background: #fbba00; border-color: #fbba00; }
+    .vazio { text-align: center; color: #aaa; padding: 2rem; font-family: 'Montserrat', sans-serif; }
+
+    /* footer */
+    footer {
+      background: #fff;
+      border-top: 1px solid #ddd;
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+      color: #888;
+      font-family: 'Open Sans', sans-serif;
+    }
+
+    @media (max-width: 600px) {
+      .campos { grid-template-columns: 1fr; }
+      .resumo { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Controle de Solicitações</h1>
+  </header>
+
+  <main>
+
+    <!-- resumo dinâmico -->
+    <div class="resumo">
+      <div class="card-resumo">
+        <div class="label">Total</div>
+        <div class="numero" id="tot">0</div>
+      </div>
+      <div class="card-resumo">
+        <div class="label">Pendentes</div>
+        <div class="numero" id="tot-pend">0</div>
+      </div>
+      <div class="card-resumo">
+        <div class="label">Concluídas</div>
+        <div class="numero" id="tot-done">0</div>
+      </div>
+    </div>
+
+    <!-- formulário -->
+    <div class="card">
+      <h2><i class="fas fa-plus"></i> Nova Solicitação</h2>
+      <div class="campos">
+        <input type="text" id="f-titulo" placeholder="Título *" />
+        <input type="text" id="f-solic" placeholder="Solicitante" />
+        <select id="f-status">
+          <option value="Pendente">Pendente</option>
+          <option value="Em andamento">Em andamento</option>
+          <option value="Concluída">Concluída</option>
+          <option value="Cancelada">Cancelada</option>
+        </select>
+      </div>
+      <div class="erro" id="erro-msg"></div>
+      <button class="btn" onclick="adicionarItem()">
+        Salvar
+      </button>
+    </div>
+
+    <!-- tabela -->
+    <div class="card">
+      <h2><i class="fas fa-list"></i> Lista de Solicitações</h2>
+      <div class="filtro-row">
+        <label>Filtrar por status:</label>
+        <select id="filtro" onchange="renderizar()">
+          <option value="">Todos</option>
+          <option value="Pendente">Pendente</option>
+          <option value="Em andamento">Em andamento</option>
+          <option value="Concluída">Concluída</option>
+          <option value="Cancelada">Cancelada</option>
+        </select>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Título</th>
+            <th>Solicitante</th>
+            <th>Status</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+
+  </main>
+
+  <footer>
+    &copy; 2026 Sistema de Solicitações. Todos os direitos reservados.
+  </footer>
+
+  <script>
+    // true = conecta na API / false = dados em memória
+    const USE_API = true;
+    const API_URL = "http://localhost:5000/solicitacoes";
+
+    // dados de exemplo
+    let dados = [
+      { id: 1, titulo: "Compra notebook", solicitante: "João", status: "Pendente" },
+      { id: 2, titulo: "Compra mouse", solicitante: "Joana", status: "Concluída" },
+    ];
+    let proximoId = 3;
+
+    // atualiza os cards de resumo
+    function atualizarResumo() {
+      document.getElementById("tot").textContent = dados.length;
+      document.getElementById("tot-pend").textContent = dados.filter(d => d.status === "Pendente").length;
+      document.getElementById("tot-done").textContent = dados.filter(d => d.status === "Concluída").length;
+    }
+
+    // retorna a classe do badge conforme o status
+    function badgeClass(status) {
+      if (status === "Pendente") return "badge-pendente";
+      if (status === "Concluída") return "badge-concluida";
+      if (status === "Em andamento") return "badge-andamento";
+      return "badge-cancelada";
+    }
+
+    // renderiza a tabela com filtro
+    function renderizar() {
+      const filtro = document.getElementById("filtro").value;
+      const lista = filtro ? dados.filter(d => d.status === filtro) : dados;
+      const tbody = document.getElementById("tbody");
+
+      if (lista.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="vazio">Nenhuma solicitação encontrada.</td></tr>';
+        atualizarResumo();
+        return;
+      }
+
+      tbody.innerHTML = lista.map(d => `
+        <tr>
+          <td style="color:#aaa;font-size:12px">${d.id}</td>
+          <td><strong>${d.titulo}</strong></td>
+          <td style="color:#666">${d.solicitante || '—'}</td>
+          <td><span class="badge ${badgeClass(d.status)}">${d.status}</span></td>
+          <td>
+            <button class="btn-status" onclick="atualizarStatus(${d.id})">
+              <i class="fas fa-sync-alt"></i> Atualizar
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      atualizarResumo();
+    }
+
+    // adiciona nova solicitação
+    async function adicionarItem() {
+      const titulo = document.getElementById("f-titulo").value.trim();
+      const solicitante = document.getElementById("f-solic").value.trim();
+      const status = document.getElementById("f-status").value;
+      const erro = document.getElementById("erro-msg");
+
+      // valida campos obrigatórios
+      if (!titulo) { erro.textContent = "O campo Título é obrigatório."; return; }
+      if (!status) { erro.textContent = "O campo Status é obrigatório."; return; }
+      erro.textContent = "";
+
+      if (USE_API) {
+        // envia pro back-end via POST
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ titulo, solicitante, status })
+        });
+        const criada = await res.json();
+        dados.push(criada);
+      } else {
+        dados.push({ id: proximoId++, titulo, solicitante, status });
+      }
+
+      // limpa o formulário
+      document.getElementById("f-titulo").value = "";
+      document.getElementById("f-solic").value = "";
+      document.getElementById("f-status").value = "Pendente";
+      renderizar();
+    }
+
+    // atualiza o status via prompt
+    async function atualizarStatus(id) {
+      const opcao = prompt("Novo status:\n1 - Pendente\n2 - Em andamento\n3 - Concluída\n4 - Cancelada");
+      const mapa = { "1": "Pendente", "2": "Em andamento", "3": "Concluída", "4": "Cancelada" };
+      if (!mapa[opcao]) return;
+
+      if (USE_API) {
+        // envia pro back-end via PUT
+        await fetch(`${API_URL}/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: mapa[opcao] })
+        });
+      }
+
+      // atualiza localmente
+      const item = dados.find(d => d.id === id);
+      if (item) item.status = mapa[opcao];
+      renderizar();
+    }
+
+    // carrega ao abrir a página
+    renderizar();
+  </script>
+
+</body>
+</html>
