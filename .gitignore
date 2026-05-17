@@ -1,0 +1,10 @@
+# arquivos gerados pelo .NET
+bin/
+obj/
+
+# variáveis de ambiente
+.env
+
+# sistema operacional
+.DS_Store
+Thumbs.db
